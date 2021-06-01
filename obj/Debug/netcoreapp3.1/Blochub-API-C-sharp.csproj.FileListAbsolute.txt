@@ -1,0 +1,15 @@
+C:\Users\Hans\Documents\GitHub\Blochub-API-C-sharp\obj\Debug\netcoreapp3.1\Blochub-API-C-sharp.csprojAssemblyReference.cache
+C:\Users\Hans\Documents\GitHub\Blochub-API-C-sharp\obj\Debug\netcoreapp3.1\Blochub-API-C-sharp.AssemblyInfoInputs.cache
+C:\Users\Hans\Documents\GitHub\Blochub-API-C-sharp\obj\Debug\netcoreapp3.1\Blochub-API-C-sharp.AssemblyInfo.cs
+C:\Users\Hans\Documents\GitHub\Blochub-API-C-sharp\obj\Debug\netcoreapp3.1\Blochub-API-C-sharp.csproj.CoreCompileInputs.cache
+C:\Users\Hans\Documents\GitHub\Blochub-API-C-sharp\bin\Debug\netcoreapp3.1\Blochub-API-C-sharp.exe
+C:\Users\Hans\Documents\GitHub\Blochub-API-C-sharp\bin\Debug\netcoreapp3.1\Blochub-API-C-sharp.deps.json
+C:\Users\Hans\Documents\GitHub\Blochub-API-C-sharp\bin\Debug\netcoreapp3.1\Blochub-API-C-sharp.runtimeconfig.json
+C:\Users\Hans\Documents\GitHub\Blochub-API-C-sharp\bin\Debug\netcoreapp3.1\Blochub-API-C-sharp.runtimeconfig.dev.json
+C:\Users\Hans\Documents\GitHub\Blochub-API-C-sharp\bin\Debug\netcoreapp3.1\Blochub-API-C-sharp.dll
+C:\Users\Hans\Documents\GitHub\Blochub-API-C-sharp\bin\Debug\netcoreapp3.1\Blochub-API-C-sharp.pdb
+C:\Users\Hans\Documents\GitHub\Blochub-API-C-sharp\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
+C:\Users\Hans\Documents\GitHub\Blochub-API-C-sharp\obj\Debug\netcoreapp3.1\Blochub-API-C-sharp.csproj.CopyComplete
+C:\Users\Hans\Documents\GitHub\Blochub-API-C-sharp\obj\Debug\netcoreapp3.1\Blochub-API-C-sharp.dll
+C:\Users\Hans\Documents\GitHub\Blochub-API-C-sharp\obj\Debug\netcoreapp3.1\Blochub-API-C-sharp.pdb
+C:\Users\Hans\Documents\GitHub\Blochub-API-C-sharp\obj\Debug\netcoreapp3.1\Blochub-API-C-sharp.genruntimeconfig.cache
