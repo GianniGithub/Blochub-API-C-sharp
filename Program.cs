@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,74 +6,53 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Blochub_API_C_sharp
 {
-	class Program
+
+	public partial class Program
 	{
-        static async Task Main(string[] args)
+		public static async Task Main(string[] args)
 		{
 			string uri = "ws://163.172.162.138:80/blocfeed";
-			string JSONcommand = @"{""type"":""subscribe"",""apikey"":""3JGKGK38D-THIS-IS-SAMPLE-KEY"",""encoding"":""json"",""markets"":[""binance"",""bitfinex""],""symbols"":[""XRP/BTC"",""BTC/EUR"",""ETH/BTC"",""ETH/EUR""],""channel"":""ticker""}";
 
-			//var sub = new BlocSubscriberSubscription() { ApiKey = "3JGKGK38D-THIS-IS-SAMPLE-KEY", Channel = }k
+			var settings = new BlocSubscriberSubscription
+				(
+					"subscribe",
+					"3JGKGK38D-THIS-IS-SAMPLE-KEY",
+					"json",
+					new string[] { "XRP/BTC", "BTC/EUR", "ETH/BTC", "ETH/EUR" },
+					new string[] { "binance", "bitfinex" },
+					"ticker"
+				);
 
-			do
+
+			try
 			{
-				using (var socket = new ClientWebSocket())
-					try
-					{
-						await socket.ConnectAsync(new Uri(uri), CancellationToken.None);
-						
-						await Send(socket, JSONcommand);
-						await Receive(socket);
+				var stream = new BlocStream(uri, settings);
 
-					}
-					catch (Exception ex)
-					{
-						Console.WriteLine($"ERROR - {ex.Message}");
-					}
-			} while (true);
+				stream.KeepConnected = true;
+				stream.BlockUpdate += Stream_BlockUpdate;
+
+				await stream.Connect();
+			}
+			catch (BlocStremException e)
+			{
+				// Handle error
+				var errMas = string.Format("Error code: '{0}' Massage: {1}", e.ErrorCode, e.ErrorMassage);
+				Console.WriteLine(errMas);
+				throw;
+			}
+
 
 		}
 
-
-		// see https://thecodegarden.net/websocket-client-dotnet
-		static async Task Receive(ClientWebSocket socket)
+		private static void Stream_BlockUpdate(Dictionary<string, string> obj)
 		{
-			var buffer = new ArraySegment<byte>(new byte[2048]);
-
-			do
-			{
-				WebSocketReceiveResult result;
-				using (var ms = new MemoryStream())
-				{
-					do
-					{
-						result = await socket.ReceiveAsync(buffer, CancellationToken.None);
-						ms.Write(buffer.Array, buffer.Offset, result.Count);
-					} while (!result.EndOfMessage);
-
-					if (result.MessageType == WebSocketMessageType.Close)
-						break;
-
-					ms.Seek(0, SeekOrigin.Begin);
-					using (var reader = new StreamReader(ms, Encoding.UTF8))
-						Console.WriteLine(await reader.ReadToEndAsync());
-				}
-			} while (true);
+			Console.WriteLine(obj["type"]);
 		}
-
-		static async Task Send(ClientWebSocket socket, string data) =>
-	await socket.SendAsync(Encoding.UTF8.GetBytes(data), WebSocketMessageType.Text, true, CancellationToken.None);
-
-
-		[Serializable]
-        public struct BlocSubscriberSubscription
-		{
-            public string Type, ApiKey, Encoding, Channel;
-            public string[] Markets, Symbols;
-		} 
 	}
 }
 
