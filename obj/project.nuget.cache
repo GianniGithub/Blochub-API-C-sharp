@@ -1,10 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "O1S4/P5iWWUBl/Vkf+VhktxS3MXLANR+DHZwALfYkfpbvmgKliIIHoIY6pY5e7Tw1z28gi/KKsFi7e9wlm+qbw==",
+  "dgSpecHash": "CNi45yGCGJBDj+zT7odYpclORmMwWGsx+WojBD6hVxrlrBuMssW8EDA0imN2dkJ1Z0kdw38D+UutzvvXyTVUhQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\Hans\\Documents\\GitHub\\Blochub-API-C-sharp\\Blochub-API-C-sharp.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Hans\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512"
+    "C:\\Users\\Hans\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\Hans\\.nuget\\packages\\netstandard.library\\2.0.0\\netstandard.library.2.0.0.nupkg.sha512",
+    "C:\\Users\\Hans\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
+    "C:\\Users\\Hans\\.nuget\\packages\\nunit\\3.13.2\\nunit.3.13.2.nupkg.sha512"
   ],
   "logs": []
 }
