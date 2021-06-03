@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blochub-API-C-sharp", "Blochub-API-C-sharp.csproj", "{6D4B6C6A-7C02-4413-A1A9-B933F4B5082E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlocTests", "..\BlocTests\BlocTests.csproj", "{4E54B0CF-6179-4CD1-8326-3A1F7592D2DE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlocTests", "BlocTests\BlocTests.csproj", "{4E54B0CF-6179-4CD1-8326-3A1F7592D2DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

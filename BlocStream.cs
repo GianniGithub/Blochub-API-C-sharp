@@ -164,6 +164,7 @@ namespace Blochub_API_C_sharp
 		{
             KeepConnected = false;
             IsConnected = false;
+            socket.Abort();
         }
     }
 
