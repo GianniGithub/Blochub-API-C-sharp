@@ -13,7 +13,7 @@ namespace Blochub_API_C_sharp
 {
     public class BlocStream
     {
-        public event Action<Dictionary<string, dynamic>> BlockUpdate;
+        public event Action<Dictionary<string, dynamic>>? BlockUpdate;
         public event Action OnReconnection;
 
         private readonly string blockServerURI;
@@ -36,31 +36,33 @@ namespace Blochub_API_C_sharp
 
         public virtual async Task Connect()
         {
-
+            // Reconnect as long KeepConnected is true
             do
             {
                 using (socket = new ClientWebSocket())
                     try
                     {
+                        // Creat Connection
                         await socket.ConnectAsync(new Uri(blockServerURI), CancellationToken.None);
                         this.IsConnected = true;
+
                         var json = JsonConvert.SerializeObject(streamSettings);
 
+                        // Send Command
                         await Send(socket, json);
+
+                        // Resive answer or stream
                         await Receive(socket);
                     }
                     catch (Exception ex)
                     {
-                        string errMas;
-
-                        if (ex is BlocStremException)
+                        if (ex is BlocStremException exception)
                         {
-                            var blockEx = ex as BlocStremException;
-                            throw blockEx;
+                            throw exception; 
                         }
                         else
                         {
-                            errMas = string.Format("Failed to connect to WebSocket server. Error was '{0}'", ex.Message);
+                            var errMas = string.Format("Failed to connect to WebSocket server. Error was '{0}'", ex.Message);
                             Console.WriteLine(errMas);
                         }
 
@@ -74,42 +76,54 @@ namespace Blochub_API_C_sharp
             this.IsConnected = false;
         }
 
-        async Task Send(ClientWebSocket socket, string data) =>
+
+        /// <summary>
+        /// Sends Command or Massage as json UTF8
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+		async Task Send(ClientWebSocket socket, string data) =>
     await socket.SendAsync(Encoding.UTF8.GetBytes(data), WebSocketMessageType.Text, true, CancellationToken.None);
 
         // see https://thecodegarden.net/websocket-client-dotnet
         async Task Receive(ClientWebSocket socket)
         {
-            var buffer = new ArraySegment<byte>(new byte[2048]);
+            ArraySegment<byte> buffer = new ArraySegment<byte>(new byte[2048]);
 
+            // As long isConnected is True
             do
             {
                 WebSocketReceiveResult result;
-                using (var ms = new MemoryStream())
-                {
-                    do
-                    {
-                        result = await socket.ReceiveAsync(buffer, CancellationToken.None);
-                        ms.Write(buffer.Array, buffer.Offset, result.Count);
-                    } while (!result.EndOfMessage);
+				using var ms = new MemoryStream();
+				do
+				{
+					result = await socket.ReceiveAsync(buffer, CancellationToken.None);
+					ms.Write(buffer.Array, buffer.Offset, result.Count);
+				} while (!result.EndOfMessage);
 
-                    if (result.MessageType == WebSocketMessageType.Close)
-                        break;
+				if (result.MessageType == WebSocketMessageType.Close)
+					break;
 
-                    ms.Seek(0, SeekOrigin.Begin);
-                    using (var reader = new StreamReader(ms, Encoding.UTF8))
-                    {
-                        var json = await reader.ReadToEndAsync();
+				ms.Seek(0, SeekOrigin.Begin);
 
-                        Dictionary<string, dynamic> values = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(json);
+				using (var reader = new StreamReader(ms, Encoding.UTF8))
+				{
+					var json = await reader.ReadToEndAsync();
 
-                        if (values["type"] == "error")
-                            handleError(values);
+					Dictionary<string, dynamic>? values = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(json);
 
-                        BlockUpdate?.Invoke(values);
-                    }
-                }
-            } while (IsConnected);
+					if (values == null)
+						handleError(new Dictionary<string, dynamic>() { { "message", "JsonConvert returns null" } });
+
+                    // HandleErrors
+					if (values["type"] == "error")
+						handleError(values);
+
+                    // If all passt, update data
+					BlockUpdate?.Invoke(values);
+				}
+			} while (IsConnected);
         }
 
         private static void handleError(Dictionary<string, dynamic> values)
@@ -117,7 +131,7 @@ namespace Blochub_API_C_sharp
             string errMs;
             int errCode = 0;
 
-            if (values.TryGetValue("code", out dynamic code))
+            if (values.TryGetValue("code", out dynamic? code))
             {
 
                 errCode = Int32.Parse(code);

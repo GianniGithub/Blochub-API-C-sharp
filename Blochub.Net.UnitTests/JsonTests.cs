@@ -1,8 +1,10 @@
 using Blochub_API_C_sharp;
+using JsonDiffPatchDotNet;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
@@ -13,6 +15,7 @@ namespace BlocTests
 	{
 		public string JSONgolangTestCommand = @"{""type"":""subscribe"",""apikey"":""3JGKGK38D-THIS-IS-SAMPLE-KEY"",""encoding"":""json"",""markets"":[""binance"",""bitfinex""],""symbols"":[""XRP/BTC"",""BTC/EUR"",""ETH/BTC"",""ETH/EUR""],""channel"":""ticker""}";
 		SignUpMassage blocsub;
+		Dictionary<string, dynamic> dictSettings => blockStream.Blocsub;
 
 		[SetUp]
 		public void Setup()
@@ -34,13 +37,12 @@ namespace BlocTests
 			serializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
 			
 			var json = JsonConvert.SerializeObject(blocsub, serializerSettings);
+			var jsonDict = JsonConvert.SerializeObject(dictSettings, serializerSettings);
 
+			var jdp = new JsonDiffPatch();
+			string diffResult = jdp.Diff(json, jsonDict);
 
-
-			var TestCommand = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(JSONgolangTestCommand);
-			var jsonTestCommand = JsonConvert.SerializeObject(TestCommand, serializerSettings);
-
-			Assert.IsTrue(jsonTestCommand == json);
+			Assert.IsTrue(diffResult == null);
 		}
 
 		[Test]
@@ -59,6 +61,34 @@ namespace BlocTests
 			//var serveKeyr = dict["apikey"];
 			var serveKeyr = subscription["apikey"];
 			Assert.IsTrue(clientKey == serveKeyr);
+		}
+		[Test]
+		public void CompareCharSet()
+		{
+			var json = JsonConvert.SerializeObject(dictSettings);
+
+			// Just to check correct char set and UTF character
+			Assert.IsFalse(ComparerString(json, JSONgolangTestCommand));
+		}
+		bool ComparerString(string json, string jsonD)
+		{
+			var jsonAr = Encoding.UTF8.GetBytes(json);
+			var jsonDAr = Encoding.UTF8.GetBytes(jsonD);
+
+			if (jsonAr == jsonDAr)
+				return true;
+
+			for (int i = 0; i < json.Length; i++)
+			{
+				if (jsonAr[i] != jsonDAr[i])
+				{
+					Console.WriteLine("jsonAr: " + Encoding.UTF8.GetString(jsonAr));
+					Console.WriteLine("jsonDAr: " + Encoding.UTF8.GetString(jsonDAr));
+					Console.WriteLine("at " + i);
+					Console.WriteLine(Encoding.UTF8.GetString(new byte[] { jsonAr[i] }) + " - " + Encoding.UTF8.GetString(new byte[] { jsonDAr[i] }));
+				}
+			}
+			return false;
 		}
 	}
 }

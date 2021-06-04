@@ -14,34 +14,62 @@ namespace Blochub_API_C_sharp
 
 	public partial class Program
 	{
-		public static async Task Main(string[] args)
+		public static Task Main(string[] args)
 		{
-			string uri = "ws://163.172.162.138:80/blocfeed";
+			string uri = @"ws://163.172.162.138:80/blocfeed";
 
 			var settings = new Dictionary<string, dynamic>()
 			{
 				{ "type","subscribe" },
-				{ "apiKey", "3JGKGK38D-THIS-IS-SAMPLE-KEY"},
+				{ "apikey", @"3JGKGK38D-THIS-IS-SAMPLE-KEY"},
 				{ "encoding", "json" },
-				{ "symbols", new string[] { "XRP/BTC", "BTC/EUR", "ETH/BTC", "ETH/EUR" } },
+				{ "symbols", new string[] { @"XRP/BTC", @"BTC/EUR", @"ETH/BTC", @"ETH/EUR" } },
 				{ "markets", new string[] { "binance", "bitfinex" } },
 				{ "channel", "ticker" }
 			};
-			var stream = await SetUpConnection(uri, settings);
+
+			var stream = SetUpConnectionAsync(uri, settings);
+
+			// Main Thread
 			stream.BlockUpdate += blockStreamUpdate;
 
+			Console.WriteLine("Press any key to quit program");
+			Console.ReadKey();
+			return Task.CompletedTask;
 		}
-		private static void blockStreamUpdate(Dictionary<string, dynamic> obj)
+
+		/// <summary>
+		/// Output
+		/// </summary>
+		/// <param name="martData">Update of Block Stream</param>
+		private static void blockStreamUpdate(Dictionary<string, dynamic> martData)
 		{
-			Console.WriteLine(obj["type"]);
+			var outd = new StringBuilder();
+
+			foreach (var data in martData)
+			{
+				outd.Append(data.Key);
+				outd.Append(@" = ");
+				outd.Append(data.Value);
+				outd.Append(@"; ");
+			}
+
+			Console.WriteLine(outd.ToString());
 		}
-		private static async Task<BlocStream> SetUpConnection(string uri, Dictionary<string, dynamic> settings)
+
+		/// <summary>
+		/// Connect to Blockstream, catch and handle Errors
+		/// </summary>
+		/// <param name="uri">target websocket adress</param>
+		/// <param name="subscriberRequest">BlocSubscriber Subscription</param>
+		/// <returns>the running Blockstream</returns>
+		private static BlocStream? SetUpConnectionAsync(string uri, Dictionary<string, dynamic> subscriberRequest)
 		{
 			try
 			{
-				var stream = new BlocStream(uri, settings);
+				var stream = new BlocStream(uri, subscriberRequest);
 				stream.KeepConnected = true;
-				await stream.Connect();
+				_ = stream.Connect();
 				return stream;
 			}
 			catch (BlocStremException e)
@@ -49,7 +77,7 @@ namespace Blochub_API_C_sharp
 				// Handle error
 				var errMas = string.Format("Error code: '{0}' Massage: {1}", e.ErrorCode, e.ErrorMassage);
 				Console.WriteLine(errMas);
-				throw;
+				return null;
 			}
 		}
 
