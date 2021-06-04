@@ -1,12 +1,15 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
+using System.Collections.Generic;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 
 namespace Blochub_API_C_sharp
 {
 
 	[Serializable]
-	public class BlocSubscriberSubscription
+	public class SignUpMassage
 	{
 		private readonly string type;
 		private readonly string apiKey;
@@ -23,7 +26,7 @@ namespace Blochub_API_C_sharp
 		public string Channel => channel;
 
 		[JsonConstructor]
-		public BlocSubscriberSubscription(string type, string apiKey, string encoding, string[] symbols, string[] markets, string channel)
+		public SignUpMassage(string type, string apiKey, string encoding, string[] symbols, string[] markets, string channel)
 		{
 			this.type = type;
 			this.apiKey = apiKey;
@@ -37,7 +40,21 @@ namespace Blochub_API_C_sharp
 			var serializerSettings = new JsonSerializerSettings();
 			serializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
 
-			return JsonConvert.SerializeObject(this, serializerSettings);
+			//return JsonConvert.SerializeObject(this, serializerSettings);
+			var dict = ToDict();
+			return JsonConvert.SerializeObject(dict,dict.GetType(), serializerSettings);
+		}
+		public Dictionary<string, dynamic> ToDict()
+		{
+			return new Dictionary<string, dynamic>()
+			{
+				{ "type","subscribe" },
+				{ "apiKey", "3JGKGK38D-THIS-IS-SAMPLE-KEY"},
+				{ "encoding", "json" },
+				{ "symbols", new string[] { "XRP/BTC", "BTC/EUR", "ETH/BTC", "ETH/EUR" } },
+				{ "markets", new string[] { "binance", "bitfinex" } },
+				{ "channel", "ticker" }
+			};
 		}
 	} 
 }

@@ -18,16 +18,15 @@ namespace Blochub_API_C_sharp
 		{
 			string uri = "ws://163.172.162.138:80/blocfeed";
 
-			var settings = new BlocSubscriberSubscription
-				(
-					"subscribe",
-					"3JGKGK38D-THIS-IS-SAMPLE-KEY",
-					"json",
-					new string[] { "XRP/BTC", "BTC/EUR", "ETH/BTC", "ETH/EUR" },
-					new string[] { "binance", "bitfinex" },
-					"ticker"
-				);
-
+			var settings = new Dictionary<string, dynamic>()
+			{
+				{ "type","subscribe" },
+				{ "apiKey", "3JGKGK38D-THIS-IS-SAMPLE-KEY"},
+				{ "encoding", "json" },
+				{ "symbols", new string[] { "XRP/BTC", "BTC/EUR", "ETH/BTC", "ETH/EUR" } },
+				{ "markets", new string[] { "binance", "bitfinex" } },
+				{ "channel", "ticker" }
+			};
 			var stream = await SetUpConnection(uri, settings);
 			stream.BlockUpdate += blockStreamUpdate;
 
@@ -36,9 +35,7 @@ namespace Blochub_API_C_sharp
 		{
 			Console.WriteLine(obj["type"]);
 		}
-
-
-		private static async Task<BlocStream> SetUpConnection(string uri, BlocSubscriberSubscription settings)
+		private static async Task<BlocStream> SetUpConnection(string uri, Dictionary<string, dynamic> settings)
 		{
 			try
 			{

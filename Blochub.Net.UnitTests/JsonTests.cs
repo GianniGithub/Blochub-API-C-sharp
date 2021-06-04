@@ -12,12 +12,12 @@ namespace BlocTests
 	public class JsonTests
 	{
 		public string JSONgolangTestCommand = @"{""type"":""subscribe"",""apikey"":""3JGKGK38D-THIS-IS-SAMPLE-KEY"",""encoding"":""json"",""markets"":[""binance"",""bitfinex""],""symbols"":[""XRP/BTC"",""BTC/EUR"",""ETH/BTC"",""ETH/EUR""],""channel"":""ticker""}";
-		BlocSubscriberSubscription blocsub;
+		SignUpMassage blocsub;
 
 		[SetUp]
 		public void Setup()
 		{
-			blocsub = new BlocSubscriberSubscription(
+			blocsub = new SignUpMassage(
 				"subscribe",
 				"3JGKGK38D-THIS-IS-SAMPLE-KEY",
 				"json",
@@ -37,7 +37,7 @@ namespace BlocTests
 
 
 
-			var TestCommand = JsonConvert.DeserializeObject<BlocSubscriberSubscription>(JSONgolangTestCommand);
+			var TestCommand = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(JSONgolangTestCommand);
 			var jsonTestCommand = JsonConvert.SerializeObject(TestCommand, serializerSettings);
 
 			Assert.IsTrue(jsonTestCommand == json);
@@ -51,13 +51,13 @@ namespace BlocTests
 
 			var json = JsonConvert.SerializeObject(blocsub, serializerSettings);
 
-			var subscription = JsonConvert.DeserializeObject<BlocSubscriberSubscription>(json);
+			var subscription = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(json);
 			var dict = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(json);
 
 			var clientKey = JsonEncodedText.Encode("3JGKGK38D-THIS-IS-SAMPLE-KEY").ToString();
 
 			//var serveKeyr = dict["apikey"];
-			var serveKeyr = subscription.ApiKey;
+			var serveKeyr = subscription["apikey"];
 			Assert.IsTrue(clientKey == serveKeyr);
 		}
 	}

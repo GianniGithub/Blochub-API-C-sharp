@@ -11,13 +11,14 @@ namespace BlocTests
 	public class blockStream
 	{
 		BlocStream stream;
-		BlocSubscriberSubscription blocsub;
+		SignUpMassage blocsub;
 		string uri = "ws://163.172.162.138:80/blocfeed";
 
 		[SetUp]
 		public void Setup()
 		{
-			blocsub = new BlocSubscriberSubscription(
+
+			blocsub = new SignUpMassage(
 				"subscribe",
 				"3JGKGK38D-THIS-IS-SAMPLE-KEY",
 				"json",
@@ -26,7 +27,7 @@ namespace BlocTests
 				"ticker"
 				);
 
-			stream = new BlocStream(uri, blocsub);
+			stream = new BlocStream(uri, blocsub.ToDict());
 			stream.KeepConnected = true;
 
 		}

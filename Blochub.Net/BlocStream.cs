@@ -18,7 +18,7 @@ namespace Blochub_API_C_sharp
 
         private readonly string blockServerURI;
         private ClientWebSocket socket;
-        private BlocSubscriberSubscription streamSettings;
+        private Dictionary<string, dynamic> streamSettings;
         /// <summary>
         /// Gets the process ID of the server process.
         /// </summary>
@@ -26,7 +26,7 @@ namespace Blochub_API_C_sharp
         public bool IsConnected { get; private set; }
         public bool KeepConnected { get; set; }
 
-        public BlocStream(string blockServerURI, BlocSubscriberSubscription streamSettings)
+        public BlocStream(string blockServerURI, Dictionary<string, dynamic> streamSettings)
         {
             this.blockServerURI = blockServerURI;
             this.streamSettings = streamSettings;
@@ -44,9 +44,9 @@ namespace Blochub_API_C_sharp
                     {
                         await socket.ConnectAsync(new Uri(blockServerURI), CancellationToken.None);
                         this.IsConnected = true;
+                        var json = JsonConvert.SerializeObject(streamSettings);
 
-                        var jsonCommand = streamSettings.ToJson();
-                        await Send(socket, jsonCommand);
+                        await Send(socket, json);
                         await Receive(socket);
                     }
                     catch (Exception ex)
